@@ -134,7 +134,7 @@ app.post("/register/", async (req, res) => {
 
 
 //API 4 - send stored data from database to frontend
-app.get("/return/" ,  async (req, res) => {
+app.get("/return/",  async (req, res) => {
   const getFromDatabase = await db.all(`
     SELECT * FROM uploaded
     `);
