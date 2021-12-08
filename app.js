@@ -75,7 +75,7 @@ app.post("/login/",  async (req, res) => {
 });
 
 
-app.get('/get-user' , async (req,res) => {
+app.get('/get-user', async (req,res) => {
   const header = (req.headers.authorization)
   const myToken = header.split(' ')[1]
   jwt.verify(myToken, "Magic", (error, decodedToken) => {
@@ -101,6 +101,7 @@ app.post("/data/", checkToken, async (req, res) => {
           VALUES ('${userId}','${id}','${title}','${body}');
       `);
   });
+
   res.send("success");
 });
 
@@ -133,7 +134,7 @@ app.post("/register/", async (req, res) => {
 
 
 //API 4 - send stored data from database to frontend
-app.get("/return/", async (req, res) => {
+app.get("/return/", checkToken,  async (req, res) => {
   const getFromDatabase = await db.all(`
     SELECT * FROM uploaded
     `);
