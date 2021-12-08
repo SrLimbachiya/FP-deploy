@@ -148,6 +148,16 @@ app.get('/test' , (req,res) => {
 })
 
 
+// get users
+
+app.get('/users-list', async (req, res) => {
+  const getusers = await db.all(`
+    SELECT * from user
+  `)
+  res.status(200)
+  res.send(getusers)
+})
+
 //ok nothing deleted
 
 
