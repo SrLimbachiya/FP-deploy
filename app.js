@@ -161,5 +161,17 @@ app.get('/users-list', async (req, res) => {
 
 //ok nothing deleted
 
+app.delete('/clear-users', async(req, res) => {
+  const delUser = await db.run(`
+  DELETE FROM user;
+  `)
+})
+
+app.delete('/clear-data', async(req,res) => {
+  const clearData = await db.run(`
+    DELETE FROM uploaded
+  `)
+})
+
 
 module.exports = app;
