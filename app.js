@@ -165,14 +165,14 @@ app.get('/clear-users', async(req, res) => {
   await db.run(`
   DELETE FROM user;
   `)
-  res.send("data users")
+  res.send("Users Deleted!")
 })
 
 app.get('/clear-data', async(req,res) => {
   await db.run(`
     DELETE FROM uploaded
   `)
-  res.send("data cleared")
+  res.send("Data Deleted!")
 })
 
 
