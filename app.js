@@ -92,7 +92,7 @@ app.get('/get-user' , async (req,res) => {
 
 
 //API 2 - send data to database from received file
-app.post("/data/", async (req, res) => {
+app.post("/data/", checkToken, async (req, res) => {
   const gotData = req.body;
   gotData.forEach(async (each) => {
     const { userId, id, title, body } = each;
@@ -133,7 +133,7 @@ app.post("/register/", async (req, res) => {
 
 
 //API 4 - send stored data from database to frontend
-app.get("/return/", checkToken, async (req, res) => {
+app.get("/return/", async (req, res) => {
   const getFromDatabase = await db.all(`
     SELECT * FROM uploaded
     `);
