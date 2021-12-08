@@ -92,7 +92,7 @@ app.get('/get-user' , async (req,res) => {
 
 
 //API 2 - send data to database from received file
-app.post("/data/", checkToken, async (req, res) => {
+app.post("/data/", async (req, res) => {
   const gotData = req.body;
   gotData.forEach(async (each) => {
     const { userId, id, title, body } = each;
