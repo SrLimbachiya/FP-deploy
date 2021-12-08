@@ -100,8 +100,9 @@ app.post("/data/", checkToken, async (req, res) => {
           VALUES ('${userId}','${id}','${title}','${body}');
       `);
     });
-    res.send("success");
+    res.status(200);
   } catch (error) {
+    res.status(400)
     res.send({error_msg : "Please Choose File"})
   }
 });
