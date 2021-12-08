@@ -52,7 +52,7 @@ const checkToken = (req, res, nxt) => {
 };
 
 // API 1 - user login
-app.post("/login/",  async (req, res) => {
+app.post("/login/", async (req, res) => {
   const { username, password } = req.body;
   const isUser = await db.get(`
   select * from user where username = '${username}'
@@ -62,7 +62,7 @@ app.post("/login/",  async (req, res) => {
     res.send({ error_msg: "Invalid username" });
   } else {
     if (await bcrypt.compare(password, isUser.password)) {
-      let payload = { username: username, fullname : isUser.full_name };
+      let payload = { username: username, fullname: isUser.full_name };
       console.log(`${username} is logged in`);
       let jwt_token = jwt.sign(payload, "Magic");
       res.send({ jwt_token });
@@ -74,40 +74,41 @@ app.post("/login/",  async (req, res) => {
   }
 });
 
-
-app.get('/get-user', async (req,res) => {
-  const header = (req.headers.authorization)
-  const myToken = header.split(' ')[1]
+app.get("/get-user", async (req, res) => {
+  const header = req.headers.authorization;
+  const myToken = header.split(" ")[1];
   jwt.verify(myToken, "Magic", (error, decodedToken) => {
     if (error) {
-      console.log(error.message)
-      res.status(400)
-      res.send({error_msg : error.message})
+      console.log(error.message);
+      res.status(400);
+      res.send({ error_msg: error.message });
     } else {
-      res.status(200)
-      res.send(decodedToken)
+      res.status(200);
+      res.send(decodedToken);
     }
-  } )
-})
-
+  });
+});
 
 //API 2 - send data to database from received file
 app.post("/data/", checkToken, async (req, res) => {
-  const gotData = req.body;
-  gotData.forEach(async (each) => {
-    const { userId, id, title, body } = each;
-    const getDis = await db.run(`
+  try {
+    const gotData = req.body;
+    gotData.forEach(async (each) => {
+      const { userId, id, title, body } = each;
+      const getDis = await db.run(`
           INSERT INTO uploaded (user_id, id, title, body)
           VALUES ('${userId}','${id}','${title}','${body}');
       `);
-  });
-
-  res.send("success");
+    });
+    res.send("success");
+  } catch (error) {
+    res.send({error_msg : "Please Choose File"})
+  }
 });
 
-//API 3 - Register new user 
+//API 3 - Register new user
 app.post("/register/", async (req, res) => {
-  const { username, fullname, password, } = req.body;
+  const { username, fullname, password } = req.body;
   const isExist = await db.get(`
     select * from user where username = '${username}'
   `);
@@ -122,7 +123,7 @@ app.post("/register/", async (req, res) => {
             insert into user (username,full_name,password) values ('${username}','${fullname}','${encryptedPass}');
         `);
       res.status(200);
-      res.send({ msg : "User created successfully"});
+      res.send({ msg: "User created successfully" });
       console.log("User created successfully");
     }
   } else {
@@ -132,7 +133,6 @@ app.post("/register/", async (req, res) => {
   }
 });
 
-
 //API 4 - send stored data from database to frontend
 app.get("/return/", checkToken, async (req, res) => {
   const getFromDatabase = await db.all(`
@@ -141,39 +141,36 @@ app.get("/return/", checkToken, async (req, res) => {
   res.send({ getFromDatabase });
 });
 
-
 // test api
-app.get('/test' , (req,res) => {
-  console.log('test done')
-  res.send('test text appering!!')
-})
-
+app.get("/test", (req, res) => {
+  console.log("test done");
+  res.send("test text appering!!");
+});
 
 // get users
 
-app.get('/users-list', async (req, res) => {
+app.get("/users-list", async (req, res) => {
   const getusers = await db.all(`
     SELECT * from user
-  `)
-  res.status(200)
-  res.send(getusers)
-})
+  `);
+  res.status(200);
+  res.send(getusers);
+});
 
 //ok nothing deleted
 
-app.get('/clear-users', async(req, res) => {
+app.get("/clear-users", async (req, res) => {
   await db.run(`
   DELETE FROM user;
-  `)
-  res.send("Users Deleted!")
-})
+  `);
+  res.send("Users Deleted!");
+});
 
-app.get('/clear-data', async(req,res) => {
+app.get("/clear-data", async (req, res) => {
   await db.run(`
     DELETE FROM uploaded
-  `)
-  res.send("Data Deleted!")
-})
-
+  `);
+  res.send("Data Deleted!");
+});
 
 module.exports = app;
