@@ -161,14 +161,14 @@ app.get('/users-list', async (req, res) => {
 
 //ok nothing deleted
 
-app.delete('/clear-users', async(req, res) => {
+app.get('/clear-users', async(req, res) => {
   await db.run(`
   DELETE * FROM user;
   `)
   res.send("data users")
 })
 
-app.delete('/clear-data', async(req,res) => {
+app.get('/clear-data', async(req,res) => {
   await db.run(`
     DELETE * FROM uploaded
   `)
